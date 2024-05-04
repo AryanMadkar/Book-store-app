@@ -1,37 +1,55 @@
 import React from "react";
 import NAvbar from "./NAvbar";
 import Footer from "./Footer";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useForm } from "react-hook-form";
-
+import  axios  from "axios";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 const Signup = () => {
+  const navigate = useNavigate();
+  const location =useLocation()
+  const from = location.state?.from?.pathname || "/"
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const onSubmit = (data) => {
-    console.log(data);
+  const onSubmit = async (data) => {
+    const userinfo = {
+      fullname: data.fullname,
+      email: data.email,
+      password: data.password,
+    };
+    await axios
+      .post("http://localhost:5000/user/signup", userinfo)
+      .then((res) => {
+        console.log(res.data);
+        if (res.data) {
+          toast.success('Successfully Signed up!')
+          localStorage.setItem("user", JSON.stringify(res.data.user));
+          setTimeout(()=>{
+            navigate(from,{replace:true})
+          },2000)
+        } else {
+          toast.error("Signing up Failed!!")
+        }
+
+      })
+      .catch((err) => {
+        console.log(err.message);
+        alert("error creating user");
+      });
   };
 
   return (
     <div>
-      <NAvbar />
       <section className="text-gray-600 body-font">
-        <div className="container px-5 py-24 mx-auto flex flex-wrap items-center">
-          <div className="lg:w-3/5 md:w-1/2 md:pr-16 lg:pr-0 pr-0">
-            <h1 className="title-font font-medium text-3xl text-gray-900">
-              Slow-carb next level shoindcgoitch ethical authentic, poko
-              scenester
-            </h1>
-            <p className="leading-relaxed mt-4">
-              Poke slow-carb mixtape knausgaard, typewriter street art gentrify
-              hammock starladder roathse. Craies vegan tousled etsy austin.
-            </p>
-          </div>
+        <div className="container px-5 py-24 mx-auto flex flex-wrap items-center justify-center">
+          
           <form onSubmit={handleSubmit(onSubmit)} method="dialog">
             {" "}
-            <div className="lg:w-2/6 md:w-1/2 bg-gray-900 rounded-lg p-8 flex flex-col md:ml-auto w-full mt-10 md:mt-0">
+            <div className=" bg-gray-900  border rounded-lg w-[34rem] p-8 flex flex-col md:ml-auto mt-10 md:mt-0">
               <h2 className="text-gray-200 text-lg font-medium title-font mb-5">
                 Sign Up
               </h2>
@@ -40,35 +58,29 @@ const Signup = () => {
                   {" "}
                   <span className="text-lg m-[0.5rem]">Name:</span>
                   <input
-                    {...register("name", { required: true })}
+                    {...register("fullname", { required: true })}
                     type="text"
-                    className="m-[0.3rem] outline-none border-none rounded-xl text-sm bg-black h-[2rem] text-white font-semibold p-[1rem] w-[100%]"
+                    className="m-[0.3rem] outline-none border-none rounded-xl text-sm bg-black h-[2rem] text-white font-semibold p-[1rem] w-[27rem]"
                   />
-                  {errors.exampleRequired && (
-                    <span>Name field is required</span>
-                  )}
+                  {errors.fullname && <span>Name field is required</span>}
                 </div>
                 <div className="m-[0.5rem]">
                   <span className="text-lg m-[0.5rem]">Email:</span>
                   <input
                     {...register("email", { required: true })}
                     type="email"
-                    className="m-[0.3rem] outline-none border-none rounded-xl text-sm bg-black h-[2rem] text-white font-semibold p-[1rem] w-[100%]"
+                    className="m-[0.3rem] outline-none border-none rounded-xl text-sm bg-black h-[2rem] text-white font-semibold p-[1rem] w-[27rem]"
                   />
-                  {errors.exampleRequired && (
-                    <span>email field is required</span>
-                  )}
+                  {errors.email && <span>email field is required</span>}
                 </div>
                 <div className="m-[0.5rem]">
                   <span className="text-lg m-[0.5rem]">Password:</span>
                   <input
                     {...register("password", { required: true })}
                     type="password"
-                    className="m-[0.3rem] outline-none border-none rounded-xl text-xl bg-black text-white p-[1rem] h-[2rem] font-semibold w-[100%]"
+                    className="m-[0.3rem] outline-none border-none rounded-xl text-xl bg-black text-white p-[1rem] h-[2rem] font-semibold w-[27rem]"
                   />
-                  {errors.exampleRequired && (
-                    <span>password field is required</span>
-                  )}
+                  {errors.password && <span>password field is required</span>}
                 </div>
               </div>
               <button

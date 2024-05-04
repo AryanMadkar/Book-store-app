@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Login from "./Login";
+import { useAuth } from './../Context/Authprovider';
+import Logout from "./Logout";
+
 const NAvbar = () => {
+
+  
 
   const [theme,setTheme]=useState(localStorage.getItem("theme")?localStorage.getItem("theme"):"light")
   const element = document.documentElement;
@@ -50,6 +55,9 @@ const NAvbar = () => {
       </li>
     </>
   );
+
+  const [authuser,setAuthuser] = useAuth()
+
   return (
     <>
         <div className="navbar px-10 dark:bg-black dark:text-white bg-slate-500 text-black w-[100%]">
@@ -147,12 +155,16 @@ const NAvbar = () => {
               </label>
             </div>
             {/* button */}
-            <div>
+            {
+              authuser?<Logout/>:
+              <div>
               {" "}
-              <a className="btn  bg-white text-cyan-500 sm:m-[0.3rem]" onClick={()=>document.getElementById("my_modal_3").showModal()}>Login
+              <a className="btn   bg-white text-cyan-500 sm:m-[0.3rem]" onClick={()=>document.getElementById("my_modal_3").showModal()}>Login
               </a>
               <Login/>
             </div>
+            }
+            
           </div>
         </div>
     </>
