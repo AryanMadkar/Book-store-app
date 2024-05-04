@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+body {
+    transition: all 0.5s linear;
+    /* background-color: black; */
+   
+    overflow-x: hidden;
+}
+
+a:hover{
+    color: cyan;
+}
